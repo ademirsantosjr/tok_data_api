@@ -1,5 +1,6 @@
 package com.usuarios.cadastro.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,6 +28,7 @@ public class Perfil implements Serializable {
 
     private String nome;
 
-    @OneToMany(mappedBy = "perfil")
+    @OneToMany(mappedBy = "perfil", fetch = FetchType.LAZY)
+    @JsonIgnore
     private Collection<Usuario> usuarios;
 }
