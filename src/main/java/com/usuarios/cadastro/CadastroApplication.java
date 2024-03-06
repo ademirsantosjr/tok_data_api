@@ -32,7 +32,7 @@ public class CadastroApplication {
 					.build();
 
 			var admPersistido = perfilRepository.save(adm);
-			var usuaroiPersistido = perfilRepository.save(usuario);
+			var usuarioPersistido = perfilRepository.save(usuario);
 			var supervisorPersistido = perfilRepository.save(supervisor);
 
 			var joao = Usuario
@@ -48,7 +48,7 @@ public class CadastroApplication {
 					.nome("Maria")
 					.email("maria@exemplo.com")
 					.senha("654321")
-					.perfil(usuaroiPersistido)
+					.perfil(usuarioPersistido)
 					.build();
 
 			var pedro = Usuario
