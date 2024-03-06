@@ -22,7 +22,7 @@ public class CadastroApplication {
 		return (args -> {
 
 			var adm = Perfil.builder()
-					.nome("Adminitrador")
+					.nome("Administrador")
 					.build();
 			var usuario = Perfil.builder()
 					.nome("Usuario")

@@ -2,6 +2,7 @@ package com.usuarios.cadastro.service;
 
 import com.usuarios.cadastro.entity.Usuario;
 import com.usuarios.cadastro.repository.UsuarioRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,7 @@ public class UsuarioService implements IUsuarioService {
     }
 
     @Override
+    @Transactional
     public Collection<Usuario> findAll() {
         log.info("Listar todos os usuarios");
         return usuarioRepository.findAll();

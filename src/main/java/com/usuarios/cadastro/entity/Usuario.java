@@ -1,5 +1,6 @@
 package com.usuarios.cadastro.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -31,9 +32,10 @@ public class Usuario implements Serializable {
     private String email;
 
     @Column(name = "senha")
+    @JsonIgnore
     private String senha;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "perfil_id")
     private Perfil perfil;
 }
