@@ -21,11 +21,9 @@ public class UserController {
     private final IUserService userService;
 
     @PostMapping
-    public ResponseEntity<UserRecord> save(
-            @RequestBody
-            @Validated(CreateUserRecord.class)
-            UserRecord userRecord) {
-
+    public ResponseEntity<UserRecord> save(@RequestBody
+                                               @Validated(CreateUserRecord.class)
+                                               UserRecord userRecord) {
         var user = userService.save(UserMapper.toModel(userRecord));
         return ResponseEntity.ok().body(UserMapper.toRecord(user));
     }

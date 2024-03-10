@@ -41,7 +41,7 @@ public class CadastroApplication {
 					.builder()
 					.name("admin")
 					.email("admin@admin.com")
-					.password("{pbkdf2}9c43a06541973e760a0bc88125305d7928c763be8946d9ae49f66ceb05dbcac8bcbee4208565fa89")
+					.password(encodePass("4657"))
 					.profile(persistedAdminProfile)
 					.build();
 
@@ -74,26 +74,26 @@ public class CadastroApplication {
 			userRepository.save(maria);
 			userRepository.save(pedro);
 
-			// Security
-
-			Map<String, PasswordEncoder> encoders = new HashMap<>();
-			Pbkdf2PasswordEncoder pbkdf2PasswordEncoder =
-					new Pbkdf2PasswordEncoder(
-							"",
-							8,
-							185000,
-							Pbkdf2PasswordEncoder.SecretKeyFactoryAlgorithm.PBKDF2WithHmacSHA256
-					);
-			encoders.put("pbkdf2", pbkdf2PasswordEncoder);
-			DelegatingPasswordEncoder delegatingPasswordEncoder =
-					new DelegatingPasswordEncoder(
-							"pbkdf2",
-							encoders
-					);
-			delegatingPasswordEncoder.setDefaultPasswordEncoderForMatches(pbkdf2PasswordEncoder);
-			var result = delegatingPasswordEncoder.encode("admin123");
-			System.out.println("My hash " + result);
 		});
+	}
+
+	private static String encodePass(String rawPassword) {
+		Map<String, PasswordEncoder> encoders = new HashMap<>();
+		Pbkdf2PasswordEncoder pbkdf2PasswordEncoder =
+				new Pbkdf2PasswordEncoder(
+						"",
+						8,
+						185000,
+						Pbkdf2PasswordEncoder.SecretKeyFactoryAlgorithm.PBKDF2WithHmacSHA256
+				);
+		encoders.put("pbkdf2", pbkdf2PasswordEncoder);
+		DelegatingPasswordEncoder delegatingPasswordEncoder =
+				new DelegatingPasswordEncoder(
+						"pbkdf2",
+						encoders
+				);
+		delegatingPasswordEncoder.setDefaultPasswordEncoderForMatches(pbkdf2PasswordEncoder);
+		return delegatingPasswordEncoder.encode(rawPassword);
 	}
 
 }

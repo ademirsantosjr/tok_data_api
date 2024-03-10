@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 public class ProfileService implements IProfileService {
 
     private final ProfileRepository profileRepository;
+
     @Override
     public Profile findByName(String name) {
         return profileRepository.findByName(name)

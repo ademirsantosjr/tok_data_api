@@ -12,9 +12,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UserService implements IUserService, UserDetailsService {
 
     private final UserRepository userRepository;

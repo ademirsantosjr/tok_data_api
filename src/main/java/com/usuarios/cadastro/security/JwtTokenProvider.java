@@ -30,11 +30,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class JwtTokenProvider {
 
-    @Value("${security.jwt.token.secret-key:secret}")
-    private String secretKey = "secret";
+    @Value("${security.jwt.token.secret-key}")
+    private String secretKey;
 
-    @Value("${security.jwt.token.expired-length:3600000}")
-    private Long expiredLengthMillis = 3600000L;
+    @Value("${security.jwt.token.expired-length}")
+    private String expiredLengthMillis;
 
     private final UserDetailsService userDetailsService;
 
@@ -48,7 +48,7 @@ public class JwtTokenProvider {
 
     public TokenRecord createAccessToken(String username, List<String> roles) {
         Instant now = Instant.now();
-        Instant validity = now.plusMillis(expiredLengthMillis); //plus an hour
+        Instant validity = now.plusMillis(Long.parseLong(expiredLengthMillis)); //plus an hour
         var accessToken = getAccessToken(username, roles, now, validity);
         var refreshToken = getRefreshToken(username, roles, now);
 
@@ -129,7 +129,7 @@ public class JwtTokenProvider {
     }
 
     private String getRefreshToken(String username, List<String> roles, Instant now) {
-        Instant validity = now.plusMillis(expiredLengthMillis * 3); //3h
+        Instant validity = now.plusMillis(Long.parseLong(expiredLengthMillis) * 3); //3h
         return JWT
                 .create()
                 .withClaim("roles", roles)
