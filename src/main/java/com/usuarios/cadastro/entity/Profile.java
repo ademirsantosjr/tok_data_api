@@ -6,18 +6,19 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
 
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Collection;
 
+@Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Entity
-@Table(name = "perfis")
-public class Perfil implements Serializable {
+@Table(name = "profiles")
+public class Profile implements GrantedAuthority, Serializable {
 
     @Serial
     private static final long serialVersionUID = -7323585998259644836L;
@@ -26,9 +27,15 @@ public class Perfil implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private String nome;
+    @Column(name = "name")
+    private String name;
 
-    @OneToMany(mappedBy = "perfil", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "profile", fetch = FetchType.LAZY)
     @JsonIgnore
-    private Collection<Usuario> usuarios;
+    private Collection<User> users;
+
+    @Override
+    public String getAuthority() {
+        return this.name;
+    }
 }

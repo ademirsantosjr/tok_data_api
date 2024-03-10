@@ -15,3 +15,11 @@ spring:
       settings:
         trace: false
         web-allow-others: false
+
+cors:
+  originPatterns: http://localhost:8080,http://localhost:8080/h2-console,http://localhost:4200
+security:
+  jwt:
+    token:
+      secret-key: 53cr37
+      expire-length: 3600000

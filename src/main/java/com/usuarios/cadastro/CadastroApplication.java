@@ -1,13 +1,19 @@
 package com.usuarios.cadastro;
 
-import com.usuarios.cadastro.entity.Perfil;
-import com.usuarios.cadastro.entity.Usuario;
-import com.usuarios.cadastro.repository.PerfilRepository;
-import com.usuarios.cadastro.repository.UsuarioRepository;
+import com.usuarios.cadastro.entity.Profile;
+import com.usuarios.cadastro.entity.User;
+import com.usuarios.cadastro.repository.ProfileRepository;
+import com.usuarios.cadastro.repository.UserRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.crypto.password.DelegatingPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @SpringBootApplication
 public class CadastroApplication {
@@ -17,51 +23,80 @@ public class CadastroApplication {
 	}
 
 	@Bean
-	public CommandLineRunner demo(UsuarioRepository usuarioRepository,
-								  PerfilRepository perfilRepository) {
+	public CommandLineRunner demo(UserRepository userRepository,
+								  ProfileRepository profileRepository) {
 		return (args -> {
 
-			var adm = Perfil.builder()
-					.nome("Administrador")
+			var adm = Profile.builder()
+					.name("Administrador")
 					.build();
-			var usuario = Perfil.builder()
-					.nome("Usuario")
+			var usuario = Profile.builder()
+					.name("Usuario")
 					.build();
-			var supervisor = Perfil.builder()
-					.nome("Supervisor")
+			var supervisor = Profile.builder()
+					.name("Supervisor")
 					.build();
 
-			var admPersistido = perfilRepository.save(adm);
-			var usuarioPersistido = perfilRepository.save(usuario);
-			var supervisorPersistido = perfilRepository.save(supervisor);
+			var admPersistido = profileRepository.save(adm);
+			var usuarioPersistido = profileRepository.save(usuario);
+			var supervisorPersistido = profileRepository.save(supervisor);
 
-			var joao = Usuario
+			var admin = User
 					.builder()
-					.nome("João")
+					.name("admin")
+					.email("admin@admin.com")
+					.password("{pbkdf2}9c43a06541973e760a0bc88125305d7928c763be8946d9ae49f66ceb05dbcac8bcbee4208565fa89")
+					.profile(admPersistido)
+					.build();
+
+			var joao = User
+					.builder()
+					.name("João")
 					.email("joao@toktok.com")
-					.senha("123456")
-					.perfil(admPersistido)
+					.password("123456")
+					.profile(usuarioPersistido)
 					.build();
 
-			var maria = Usuario
+			var maria = User
 					.builder()
-					.nome("Maria")
+					.name("Maria")
 					.email("maria@exemplo.com")
-					.senha("654321")
-					.perfil(usuarioPersistido)
+					.password("654321")
+					.profile(usuarioPersistido)
 					.build();
 
-			var pedro = Usuario
+			var pedro = User
 					.builder()
-					.nome("Pedro")
+					.name("Pedro")
 					.email("pedro@top.com")
-					.senha("789456")
-					.perfil(supervisorPersistido)
+					.password("789456")
+					.profile(supervisorPersistido)
 					.build();
 
-			usuarioRepository.save(joao);
-			usuarioRepository.save(maria);
-			usuarioRepository.save(pedro);
+			userRepository.save(admin);
+			userRepository.save(joao);
+			userRepository.save(maria);
+			userRepository.save(pedro);
+
+			// Security
+
+			Map<String, PasswordEncoder> encoders = new HashMap<>();
+			Pbkdf2PasswordEncoder pbkdf2PasswordEncoder =
+					new Pbkdf2PasswordEncoder(
+							"",
+							8,
+							185000,
+							Pbkdf2PasswordEncoder.SecretKeyFactoryAlgorithm.PBKDF2WithHmacSHA256
+					);
+			encoders.put("pbkdf2", pbkdf2PasswordEncoder);
+			DelegatingPasswordEncoder delegatingPasswordEncoder =
+					new DelegatingPasswordEncoder(
+							"pbkdf2",
+							encoders
+					);
+			delegatingPasswordEncoder.setDefaultPasswordEncoderForMatches(pbkdf2PasswordEncoder);
+			var result = delegatingPasswordEncoder.encode("admin123");
+			System.out.println("My hash " + result);
 		});
 	}
 
