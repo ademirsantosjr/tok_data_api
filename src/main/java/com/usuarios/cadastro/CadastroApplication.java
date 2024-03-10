@@ -27,26 +27,22 @@ public class CadastroApplication {
 								  ProfileRepository profileRepository) {
 		return (args -> {
 
-			var adm = Profile.builder()
-					.name("Administrador")
+			var adminProfie = Profile.builder()
+					.name("ADMIN")
 					.build();
-			var usuario = Profile.builder()
-					.name("Usuario")
-					.build();
-			var supervisor = Profile.builder()
-					.name("Supervisor")
+			var userProfile = Profile.builder()
+					.name("USER")
 					.build();
 
-			var admPersistido = profileRepository.save(adm);
-			var usuarioPersistido = profileRepository.save(usuario);
-			var supervisorPersistido = profileRepository.save(supervisor);
+			var persistedAdminProfile = profileRepository.save(adminProfie);
+			var persistedUserProfile = profileRepository.save(userProfile);
 
 			var admin = User
 					.builder()
 					.name("admin")
 					.email("admin@admin.com")
 					.password("{pbkdf2}9c43a06541973e760a0bc88125305d7928c763be8946d9ae49f66ceb05dbcac8bcbee4208565fa89")
-					.profile(admPersistido)
+					.profile(persistedAdminProfile)
 					.build();
 
 			var joao = User
@@ -54,7 +50,7 @@ public class CadastroApplication {
 					.name("João")
 					.email("joao@toktok.com")
 					.password("123456")
-					.profile(usuarioPersistido)
+					.profile(persistedUserProfile)
 					.build();
 
 			var maria = User
@@ -62,7 +58,7 @@ public class CadastroApplication {
 					.name("Maria")
 					.email("maria@exemplo.com")
 					.password("654321")
-					.profile(usuarioPersistido)
+					.profile(persistedUserProfile)
 					.build();
 
 			var pedro = User
@@ -70,7 +66,7 @@ public class CadastroApplication {
 					.name("Pedro")
 					.email("pedro@top.com")
 					.password("789456")
-					.profile(supervisorPersistido)
+					.profile(persistedUserProfile)
 					.build();
 
 			userRepository.save(admin);

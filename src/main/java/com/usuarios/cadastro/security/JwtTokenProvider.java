@@ -18,6 +18,10 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.Base64;
 import java.util.Date;
 import java.util.List;
@@ -43,8 +47,8 @@ public class JwtTokenProvider {
     }
 
     public TokenRecord createAccessToken(String username, List<String> roles) {
-        Date now = new Date();
-        Date validity = new Date(now.getTime() + expiredLengthMillis); //plus an hour
+        Instant now = Instant.now();
+        Instant validity = now.plusMillis(expiredLengthMillis); //plus an hour
         var accessToken = getAccessToken(username, roles, now, validity);
         var refreshToken = getRefreshToken(username, roles, now);
 
@@ -107,7 +111,7 @@ public class JwtTokenProvider {
         }
     }
 
-    private String getAccessToken(String username, List<String> roles, Date now, Date validity) {
+    private String getAccessToken(String username, List<String> roles, Instant now, Instant validity) {
         String issuerUrl =
                 ServletUriComponentsBuilder
                         .fromCurrentContextPath()
@@ -124,8 +128,8 @@ public class JwtTokenProvider {
                 .sign(algorithm);
     }
 
-    private String getRefreshToken(String username, List<String> roles, Date now) {
-        Date validity = new Date(now.getTime() + expiredLengthMillis * 3); //3h
+    private String getRefreshToken(String username, List<String> roles, Instant now) {
+        Instant validity = now.plusMillis(expiredLengthMillis * 3); //3h
         return JWT
                 .create()
                 .withClaim("roles", roles)

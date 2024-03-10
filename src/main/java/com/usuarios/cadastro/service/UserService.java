@@ -18,10 +18,15 @@ import java.util.Collection;
 public class UserService implements IUserService, UserDetailsService {
 
     private final UserRepository userRepository;
+    private final IProfileService profileService;
+    private final IUserPasswordEncoder passwordEncoder;
 
     @Override
     public User save(User user) {
         log.info("Armazenar novo usuario %s".formatted(user));
+        var profile = profileService.findByName(user.getProfile().getName());
+        user.setProfile(profile);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }
 
@@ -53,7 +58,11 @@ public class UserService implements IUserService, UserDetailsService {
     public void updateById(User user, Integer id) {
         log.info("Atualizar usuario %s ID=%s".formatted(user, id));
         userRepository.findById(id)
-                .map(usuarioEncontrado -> userRepository.save(user))
+                .map(foundUser -> {
+                    if (user.getName() != null) foundUser.setName(user.getName());
+                    if (user.getEmail() != null) foundUser.setEmail(user.getEmail());
+                    return userRepository.save(foundUser);
+                })
                 .orElseThrow(
                         () -> new RuntimeException(
                                 "Nenhum usuario com ID=%s foi encontrado.".formatted(id)));

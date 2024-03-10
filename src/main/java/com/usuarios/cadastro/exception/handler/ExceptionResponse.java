@@ -1,11 +1,11 @@
 package com.usuarios.cadastro.exception.handler;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
-public record ExceptionResponse(Date timestamp,
+public record ExceptionResponse(LocalDateTime timestamp,
                                 String message,
                                 String details) {
-    public ExceptionResponse(Date timestamp,
+    public ExceptionResponse(LocalDateTime timestamp,
                              String message,
                              String details) {
         this.timestamp = timestamp;

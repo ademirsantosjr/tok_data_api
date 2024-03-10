@@ -3,9 +3,12 @@ package com.usuarios.cadastro.controller;
 import com.usuarios.cadastro.entity.User;
 import com.usuarios.cadastro.mapper.UserMapper;
 import com.usuarios.cadastro.record.UserRecord;
+import com.usuarios.cadastro.record.validgroup.CreateUserRecord;
 import com.usuarios.cadastro.service.IUserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
@@ -18,7 +21,11 @@ public class UserController {
     private final IUserService userService;
 
     @PostMapping
-    public ResponseEntity<UserRecord> save(@RequestBody UserRecord userRecord) {
+    public ResponseEntity<UserRecord> save(
+            @RequestBody
+            @Validated(CreateUserRecord.class)
+            UserRecord userRecord) {
+
         var user = userService.save(UserMapper.toModel(userRecord));
         return ResponseEntity.ok().body(UserMapper.toRecord(user));
     }
@@ -37,8 +44,9 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> updatedById(@RequestBody User user,
+    public ResponseEntity<Void> updatedById(@RequestBody UserRecord userRecord,
                                             @PathVariable Integer id) {
+        var user = UserMapper.toModel(userRecord);
         userService.updateById(user, id);
         return ResponseEntity.noContent().build();
     }

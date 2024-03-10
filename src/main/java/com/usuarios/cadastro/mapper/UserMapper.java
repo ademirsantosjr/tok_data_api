@@ -11,7 +11,8 @@ public class UserMapper {
                 user.getId(),
                 user.getName(),
                 user.getEmail(),
-                user.getName()
+                null,
+                user.getProfile().getName()
         );
     }
 
@@ -20,8 +21,8 @@ public class UserMapper {
                 userRecord.id(),
                 userRecord.name(),
                 userRecord.email(),
-                null,
-                new Profile(null, userRecord.profileName(), null)
+                userRecord.password(),
+                new Profile(null, userRecord.profile(), null)
         );
     }
 }

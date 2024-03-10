@@ -1,17 +1,18 @@
 package com.usuarios.cadastro.record;
 
+import java.time.Instant;
 import java.util.Date;
 
 public record TokenRecord(String username,
                           Boolean authenticated,
-                          Date created,
-                          Date expiration,
+                          Instant created,
+                          Instant expiration,
                           String accessToken,
                           String refreshToken) {
     public TokenRecord(String username,
                        Boolean authenticated,
-                       Date created,
-                       Date expiration,
+                       Instant created,
+                       Instant expiration,
                        String accessToken,
                        String refreshToken) {
         this.username = username;
