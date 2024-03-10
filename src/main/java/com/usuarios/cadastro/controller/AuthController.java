@@ -1,5 +1,6 @@
 package com.usuarios.cadastro.controller;
 
+import com.usuarios.cadastro.record.RefreshTokenRecord;
 import com.usuarios.cadastro.record.UserCredentialsRecord;
 import com.usuarios.cadastro.service.AuthService;
 import jakarta.validation.constraints.NotBlank;
@@ -25,10 +26,9 @@ public class AuthController {
         return token;
     }
 
-    @PutMapping("/refresh/{username}")
-    public ResponseEntity<?> refreshToken(@PathVariable("username") @NotBlank String username,
-                                          @RequestHeader("Authorization") @NotBlank String refreshToken) {
-        var token = authService.refreshToken(username, refreshToken);
+    @PutMapping("/refresh")
+    public ResponseEntity<?> refreshToken(@RequestBody RefreshTokenRecord refreshTokenRecord) {
+        var token = authService.refreshToken(refreshTokenRecord);
         if (token == null) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Invalid Credentials!");
         }

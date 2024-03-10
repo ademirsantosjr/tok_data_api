@@ -1,5 +1,6 @@
 package com.usuarios.cadastro.service;
 
+import com.usuarios.cadastro.record.RefreshTokenRecord;
 import com.usuarios.cadastro.record.TokenRecord;
 import com.usuarios.cadastro.record.UserCredentialsRecord;
 import com.usuarios.cadastro.security.JwtTokenProvider;
@@ -39,9 +40,9 @@ public class AuthService implements IAuthService {
         }
     }
 
-    public ResponseEntity<TokenRecord> refreshToken(String username, String refreshToken) {
-        var user = userService.findByName(username);
-        var tokenResponse = jwtTokenProvider.refreshToken(refreshToken);
+    public ResponseEntity<TokenRecord> refreshToken(RefreshTokenRecord refreshTokenRecord) {
+        var user = userService.findByName(refreshTokenRecord.username());
+        var tokenResponse = jwtTokenProvider.refreshToken(refreshTokenRecord.refreshToken());
         return ResponseEntity.ok().body(tokenResponse);
     }
 }
