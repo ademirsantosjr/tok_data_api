@@ -1,4 +1,0 @@
-CREATE TABLE perfis (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    nome VARCHAR(250)
-)
