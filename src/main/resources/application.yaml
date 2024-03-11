@@ -1,0 +1,25 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:Cadastro
+    username: user
+  jpa:
+#    hibernate:
+#      ddl-auto: update
+#    properties:
+#      show-sql: true
+    open-in-view: false
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+      settings:
+        trace: false
+        web-allow-others: false
+
+cors:
+  originPatterns: http://localhost:8080,http://localhost:8080/h2-console,http://localhost:4200
+security:
+  jwt:
+    token:
+      secret-key: 53cr37
+      expired-length: 10000
