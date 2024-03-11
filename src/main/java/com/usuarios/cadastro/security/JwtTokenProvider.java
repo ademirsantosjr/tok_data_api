@@ -10,6 +10,7 @@ import com.usuarios.cadastro.record.TokenRecord;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -28,6 +29,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class JwtTokenProvider {
 
     @Value("${security.jwt.token.secret-key}")
@@ -66,11 +68,15 @@ public class JwtTokenProvider {
         if (refreshToken.contains("Bearer ")) {
             refreshToken = refreshToken.substring("Bearer ".length());
         }
-        JWTVerifier jwtVerifier = JWT.require(algorithm).build();
-        DecodedJWT decodedJWT = jwtVerifier.verify(refreshToken);
-        String username = decodedJWT.getSubject();
-        List<String> roles = decodedJWT.getClaim("roles").asList(String.class);
-        return createAccessToken(username, roles);
+        try {
+            JWTVerifier jwtVerifier = JWT.require(algorithm).build();
+            DecodedJWT decodedJWT = jwtVerifier.verify(refreshToken);
+            String username = decodedJWT.getSubject();
+            List<String> roles = decodedJWT.getClaim("roles").asList(String.class);
+            return createAccessToken(username, roles);
+        } catch (TokenExpiredException e) {
+            throw new InvalidJwtAuthenticationException(e.getMessage());
+        }
     }
 
     public Authentication getAuthentication(String token) {
@@ -97,7 +103,9 @@ public class JwtTokenProvider {
         try {
             return !decodedJWT.getExpiresAt().before(new Date());
         } catch (Exception e) {
-            throw new InvalidJwtAuthenticationException("Expired or invalid JWT token!");
+            log.error("Erro ao validar o Token: %s".formatted(e.getMessage()));
+            return false;
+            // throw new InvalidJwtAuthenticationException("Expired or invalid JWT token!");
         }
     }
 
@@ -107,7 +115,8 @@ public class JwtTokenProvider {
         try {
             return jwtVerifier.verify(token);
         } catch (TokenExpiredException tee) {
-            throw new InvalidJwtAuthenticationException(tee.getMessage());
+            log.error("Erro ao verificar o token: %s".formatted(tee.getMessage()));
+            return null;
         }
     }
 
