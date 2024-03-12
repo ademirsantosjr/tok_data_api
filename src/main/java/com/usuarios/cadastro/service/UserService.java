@@ -7,12 +7,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-
-import java.util.Collection;
 
 @Service
 @RequiredArgsConstructor
@@ -80,6 +79,15 @@ public class UserService implements IUserService, UserDetailsService {
             throw new RuntimeException(
                     "Nenhum usuario com ID=%s foi encontrado.".formatted(id));
         }
+    }
+
+    @Override
+    public Page<User> findByNameOrEmail(String nameOrEmail,
+                                        Integer pageNumber,
+                                        Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        return userRepository.findByNameIgnoreCaseContainingOrEmailIgnoreCaseContaining(
+                nameOrEmail, nameOrEmail, pageable);
     }
 
     @Override
