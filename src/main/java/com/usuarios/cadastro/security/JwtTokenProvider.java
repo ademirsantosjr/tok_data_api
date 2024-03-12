@@ -138,7 +138,7 @@ public class JwtTokenProvider {
     }
 
     private String getRefreshToken(String username, List<String> roles, Instant now) {
-        Instant validity = now.plusMillis(Long.parseLong(expiredLengthMillis) * 3); //3h
+        Instant validity = now.plusMillis(Long.parseLong(expiredLengthMillis) * 100);
         return JWT
                 .create()
                 .withClaim("roles", roles)
