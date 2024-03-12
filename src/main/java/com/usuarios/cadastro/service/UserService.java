@@ -5,6 +5,8 @@ import com.usuarios.cadastro.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -32,9 +34,10 @@ public class UserService implements IUserService, UserDetailsService {
 
     @Override
     @Transactional
-    public Collection<User> findAll() {
-        log.info("Listar todos os usuarios");
-        return userRepository.findAll();
+    public Page<User> findAll(Integer pageNumber, Integer pageSize) {
+        log.info("Listar todos os usuarios de forma paginada");
+        var pageable = PageRequest.of(pageNumber, pageSize);
+        return userRepository.findAll(pageable);
     }
 
     @Override
