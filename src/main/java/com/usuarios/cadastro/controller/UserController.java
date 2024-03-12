@@ -1,23 +1,20 @@
 package com.usuarios.cadastro.controller;
 
-import com.usuarios.cadastro.entity.User;
 import com.usuarios.cadastro.mapper.UserMapper;
 import com.usuarios.cadastro.record.UserRecord;
 import com.usuarios.cadastro.record.validgroup.CreateUserRecord;
 import com.usuarios.cadastro.service.IUserService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collection;
-
 @RestController
 @RequestMapping("/users")
 @RequiredArgsConstructor
+@Slf4j
 public class UserController {
 
     private final IUserService userService;
@@ -34,6 +31,16 @@ public class UserController {
             @RequestParam(value="pageNumber", defaultValue="0") Integer pageNumber,
             @RequestParam(value="pageSize", defaultValue="5") Integer pageSize) {
         var users = userService.findAll(pageNumber, pageSize);
+        var pagedUsersRecords = users.map(UserMapper::toRecord);
+        return ResponseEntity.ok().body(pagedUsersRecords);
+    }
+
+    @GetMapping("/find-by-username-or-email/{usernameOrEmail}")
+    public ResponseEntity<Page<UserRecord>> findByName(
+            @PathVariable("usernameOrEmail") String usernameOrEmail,
+            @RequestParam(value="pageNumber", defaultValue="0") Integer pageNumber,
+            @RequestParam(value="pageSize", defaultValue="5") Integer pageSize) {
+        var users = userService.findByNameOrEmail(usernameOrEmail, pageNumber, pageSize);
         var pagedUsersRecords = users.map(UserMapper::toRecord);
         return ResponseEntity.ok().body(pagedUsersRecords);
     }
