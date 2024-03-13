@@ -71,14 +71,9 @@ public class UserService implements IUserService, UserDetailsService {
     }
 
     @Override
-    public void deleteById(Integer id) {
-        log.info("Remover usuario ID=%s".formatted(id));
-        if (userRepository.findById(id).isPresent()) {
-            userRepository.deleteById(id);
-        } else {
-            throw new RuntimeException(
-                    "Nenhum usuario com ID=%s foi encontrado.".formatted(id));
-        }
+    public void deleteByName(String name) {
+        log.info("Remover usuario nome=%s".formatted(name));
+        userRepository.findByName(name).ifPresent(userRepository::delete);
     }
 
     @Override
