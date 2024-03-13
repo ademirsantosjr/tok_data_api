@@ -57,17 +57,21 @@ public class UserService implements IUserService, UserDetailsService {
     }
 
     @Override
-    public void updateById(User user, Integer id) {
-        log.info("Atualizar usuario %s ID=%s".formatted(user, id));
-        userRepository.findById(id)
+    public void updateByName(User user, String name) {
+        log.info("Atualizar usuario '%s'".formatted(user.getName()));
+        userRepository.findByName(name)
                 .map(foundUser -> {
                     if (user.getName() != null) foundUser.setName(user.getName());
                     if (user.getEmail() != null) foundUser.setEmail(user.getEmail());
+                    if (user.getProfile().getName() != null) {
+                        var profile = profileService.findByName(user.getProfile().getName());
+                        foundUser.setProfile(profile);
+                    }
                     return userRepository.save(foundUser);
                 })
                 .orElseThrow(
                         () -> new RuntimeException(
-                                "Nenhum usuario com ID=%s foi encontrado.".formatted(id)));
+                                "Nenhum usuario com nome '%s' foi encontrado.".formatted(name)));
     }
 
     @Override

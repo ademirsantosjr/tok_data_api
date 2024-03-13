@@ -8,7 +8,7 @@ public interface IUserService {
     Page<User> findAll(Integer pageNumber, Integer pageSize);
     User findById(Integer id);
     User findByName(String name);
-    void updateById(User user, Integer id);
+    void updateByName(User user, String name);
     void deleteByName(String name);
     Page<User> findByNameOrEmail(String name, Integer pageNumber, Integer pageSize);
 }

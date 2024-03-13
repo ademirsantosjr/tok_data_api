@@ -73,7 +73,10 @@ public class SecurityConfig {
                                         "/auth/refresh/**",
                                         "/h2-console/**"
                                 ).permitAll()
-                                .requestMatchers("/users/**").authenticated()
+                                .requestMatchers(
+                                        "/users/**",
+                                        "/profiles/**"
+                                ).authenticated()
                 )
                 .headers(
                         headers ->

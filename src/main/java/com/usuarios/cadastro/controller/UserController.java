@@ -51,11 +51,11 @@ public class UserController {
         return ResponseEntity.ok().body(UserMapper.toRecord(user));
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/{name}")
     public ResponseEntity<Void> updatedById(@RequestBody UserRecord userRecord,
-                                            @PathVariable Integer id) {
+                                            @PathVariable("name") String name) {
         var user = UserMapper.toModel(userRecord);
-        userService.updateById(user, id);
+        userService.updateByName(user, name);
         return ResponseEntity.noContent().build();
     }
 
