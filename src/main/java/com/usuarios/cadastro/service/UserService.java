@@ -63,6 +63,10 @@ public class UserService implements IUserService, UserDetailsService {
                 .map(foundUser -> {
                     if (user.getName() != null) foundUser.setName(user.getName());
                     if (user.getEmail() != null) foundUser.setEmail(user.getEmail());
+                    if (user.getProfile().getName() != null) {
+                        var profile = profileService.findByName(user.getProfile().getName());
+                        foundUser.setProfile(profile);
+                    }
                     return userRepository.save(foundUser);
                 })
                 .orElseThrow(
