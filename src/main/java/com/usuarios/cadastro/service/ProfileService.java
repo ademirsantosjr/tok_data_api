@@ -6,6 +6,8 @@ import com.usuarios.cadastro.repository.ProfileRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
+
 @Service
 @RequiredArgsConstructor
 public class ProfileService implements IProfileService {
@@ -18,5 +20,10 @@ public class ProfileService implements IProfileService {
                 .orElseThrow(
                         () -> new ProfileNotFoundException(
                                 "No profile with name=%s was found".formatted(name)));
+    }
+
+    @Override
+    public Collection<Profile> findAll() {
+        return profileRepository.findAll();
     }
 }

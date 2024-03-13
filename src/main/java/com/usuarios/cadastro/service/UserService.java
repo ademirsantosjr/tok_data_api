@@ -5,12 +5,13 @@ import com.usuarios.cadastro.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-
-import java.util.Collection;
 
 @Service
 @RequiredArgsConstructor
@@ -32,9 +33,10 @@ public class UserService implements IUserService, UserDetailsService {
 
     @Override
     @Transactional
-    public Collection<User> findAll() {
-        log.info("Listar todos os usuarios");
-        return userRepository.findAll();
+    public Page<User> findAll(Integer pageNumber, Integer pageSize) {
+        log.info("Listar todos os usuarios de forma paginada");
+        var pageable = PageRequest.of(pageNumber, pageSize);
+        return userRepository.findAll(pageable);
     }
 
     @Override
@@ -55,28 +57,36 @@ public class UserService implements IUserService, UserDetailsService {
     }
 
     @Override
-    public void updateById(User user, Integer id) {
-        log.info("Atualizar usuario %s ID=%s".formatted(user, id));
-        userRepository.findById(id)
+    public void updateByName(User user, String name) {
+        log.info("Atualizar usuario '%s'".formatted(user.getName()));
+        userRepository.findByName(name)
                 .map(foundUser -> {
                     if (user.getName() != null) foundUser.setName(user.getName());
                     if (user.getEmail() != null) foundUser.setEmail(user.getEmail());
+                    if (user.getProfile().getName() != null) {
+                        var profile = profileService.findByName(user.getProfile().getName());
+                        foundUser.setProfile(profile);
+                    }
                     return userRepository.save(foundUser);
                 })
                 .orElseThrow(
                         () -> new RuntimeException(
-                                "Nenhum usuario com ID=%s foi encontrado.".formatted(id)));
+                                "Nenhum usuario com nome '%s' foi encontrado.".formatted(name)));
     }
 
     @Override
-    public void deleteById(Integer id) {
-        log.info("Remover usuario ID=%s".formatted(id));
-        if (userRepository.findById(id).isPresent()) {
-            userRepository.deleteById(id);
-        } else {
-            throw new RuntimeException(
-                    "Nenhum usuario com ID=%s foi encontrado.".formatted(id));
-        }
+    public void deleteByName(String name) {
+        log.info("Remover usuario nome=%s".formatted(name));
+        userRepository.findByName(name).ifPresent(userRepository::delete);
+    }
+
+    @Override
+    public Page<User> findByNameOrEmail(String nameOrEmail,
+                                        Integer pageNumber,
+                                        Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        return userRepository.findByNameIgnoreCaseContainingOrEmailIgnoreCaseContaining(
+                nameOrEmail, nameOrEmail, pageable);
     }
 
     @Override
