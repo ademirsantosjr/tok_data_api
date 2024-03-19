@@ -2,6 +2,10 @@ spring:
   datasource:
     url: jdbc:h2:mem:Cadastro
     username: user
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    url: jdbc:mysql://mysql_db:3307/Cadastro?useTimezone=true&serverTimezone=UTC
+#    username: root
+#    password: C@Da$tr01_rootpassword
   jpa:
 #    hibernate:
 #      ddl-auto: update
