@@ -32,7 +32,7 @@ java --version
 ```bash
 java -jar cadastro-0.0.1-SNAPSHOT.jar
 ```
-A aplicação estará em execução no endereço `http://localhost:8080`.<br>
+A aplicação estará em execução no endereço `http://localhost:8080` e você pode acessar sua documentação navegando até `http://localhost:8080/swagger-ui/index.html`<br>
 <br>
 Para consumir os recursos desta aplicação utilizando uma interface de usuário acesse [Users UI](https://github.com/ademirsantosjr/users_ui) e siga as instruções.
 
