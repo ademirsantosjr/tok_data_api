@@ -100,24 +100,13 @@ public class JwtTokenProvider {
 
     public boolean validateToken(String token) {
         DecodedJWT decodedJWT = decodedToken(token);
-        try {
-            return !decodedJWT.getExpiresAt().before(new Date());
-        } catch (Exception e) {
-            log.error("Erro ao validar o Token: %s".formatted(e.getMessage()));
-            return false;
-            // throw new InvalidJwtAuthenticationException("Expired or invalid JWT token!");
-        }
+        return !decodedJWT.getExpiresAt().before(new Date());
     }
 
     private DecodedJWT decodedToken(String token) {
         Algorithm algorithm = Algorithm.HMAC256(secretKey.getBytes());
         JWTVerifier jwtVerifier = JWT.require(algorithm).build();
-        try {
-            return jwtVerifier.verify(token);
-        } catch (TokenExpiredException tee) {
-            log.error("Erro ao verificar o token: %s".formatted(tee.getMessage()));
-            return null;
-        }
+        return jwtVerifier.verify(token);
     }
 
     private String getAccessToken(String username, List<String> roles, Instant now, Instant validity) {
