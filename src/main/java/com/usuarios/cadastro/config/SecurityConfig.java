@@ -5,6 +5,7 @@ import com.usuarios.cadastro.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -74,9 +75,21 @@ public class SecurityConfig {
                                         "/h2-console/**"
                                 ).permitAll()
                                 .requestMatchers(
-                                        "/users/**",
+                                        HttpMethod.GET, "/users/**",
                                         "/profiles/**"
                                 ).authenticated()
+                                .requestMatchers(
+                                        HttpMethod.DELETE,
+                                        "/users/**"
+                                ).hasAnyAuthority("ADMIN")
+                                .requestMatchers(
+                                        HttpMethod.POST,
+                                        "/users/**"
+                                ).hasAnyAuthority("ADMIN")
+                                .requestMatchers(
+                                        HttpMethod.PUT,
+                                        "/users/**"
+                                ).hasAnyAuthority("ADMIN")
                 )
                 .headers(
                         headers ->
