@@ -50,7 +50,7 @@ public class JwtTokenProvider {
 
     public TokenRecord createAccessToken(String username, List<String> roles) {
         Instant now = Instant.now();
-        Instant validity = now.plusMillis(Long.parseLong(expiredLengthMillis)); //plus an hour
+        Instant validity = now.plusMillis(Long.parseLong(expiredLengthMillis));
         var accessToken = getAccessToken(username, roles, now, validity);
         var refreshToken = getRefreshToken(username, roles, now);
 
@@ -91,7 +91,7 @@ public class JwtTokenProvider {
     }
 
     public String resolveToken(HttpServletRequest httpServletRequest) {
-        String bearerToken = httpServletRequest.getHeader("Authorization"); //Bearer {token}
+        String bearerToken = httpServletRequest.getHeader("Authorization");
         if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
             return bearerToken.substring("Bearer ".length());
         }
