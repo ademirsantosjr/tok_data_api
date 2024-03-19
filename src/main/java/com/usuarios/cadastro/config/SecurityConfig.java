@@ -72,7 +72,9 @@ public class SecurityConfig {
                                 .requestMatchers(
                                         "/auth/signin",
                                         "/auth/refresh/**",
-                                        "/h2-console/**"
+                                        "/h2-console/**",
+                                        "/swagger-ui/**",
+                                        "/v3/api-docs/**"
                                 ).permitAll()
                                 .requestMatchers(
                                         HttpMethod.GET, "/users/**",
